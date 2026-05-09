@@ -1,5 +1,6 @@
 import { computed, ref, watch, type ComputedRef, type Ref } from 'vue';
 
+import type { QueryStateInput } from './query';
 import type { QueryPatchOptions, UseQueryStateReturn } from './use-query-state';
 import type { InferQuerySchema, QuerySchema } from './types';
 
@@ -13,7 +14,7 @@ export type UseQueryBufferReturn<TSchema extends QuerySchema> = {
   draft: Ref<InferQuerySchema<TSchema>>;
   applied: ComputedRef<InferQuerySchema<TSchema>>;
   isDirty: ComputedRef<boolean>;
-  patch: (values: Partial<InferQuerySchema<TSchema>>) => void;
+  patch: (values: QueryStateInput<TSchema>) => void;
   apply: (options?: QueryPatchOptions) => Promise<void>;
   reset: () => void;
   clear: () => void;
