@@ -35,7 +35,8 @@
     "typecheck:core": "tsc --project tsconfig.json --noEmit",
     "test": "vitest run",
     "build": "tsup",
-    "smoke:package": "npm run build && node scripts/smoke-package.mjs",
+    "smoke:package": "node scripts/smoke-package.mjs",
+    "check:package": "npm run build && npm run smoke:package",
     "prepack": "npm run build",
     "playground": "npm --prefix playground run dev"
   },
