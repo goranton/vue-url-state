@@ -1,4 +1,5 @@
 import type { InferQuerySchema, QuerySchema, QueryPrimitive } from './types';
+import { getSchemaMeta } from './internal/schema-meta';
 
 export type QueryValue = QueryPrimitive;
 export type QueryObject = Record<string, QueryValue>;
@@ -33,19 +34,15 @@ function isSameValue(left: unknown, right: unknown): boolean {
   return Object.is(left, right);
 }
 
-function getSchemaKeySet<TSchema extends QuerySchema>(schema: TSchema): Set<string> {
-  return new Set<string>(Object.keys(schema));
-}
-
 function getUnknownQuery<TSchema extends QuerySchema>(
   schema: TSchema,
   query: QueryObject,
 ): QueryObject {
-  const schemaKeySet = getSchemaKeySet(schema);
+  const { keySet } = getSchemaMeta(schema);
   const result: QueryObject = {};
 
   for (const key of Object.keys(query)) {
-    if (!schemaKeySet.has(key)) {
+    if (!keySet.has(key)) {
       result[key] = query[key];
     }
   }
@@ -58,9 +55,9 @@ export function deserializeQuery<TSchema extends QuerySchema>(
   query: QueryObject,
 ): InferQuerySchema<TSchema> {
   const result = {} as InferQuerySchema<TSchema>;
-  const schemaKeys = Object.keys(schema) as Array<keyof TSchema>;
+  const { keys } = getSchemaMeta(schema);
 
-  for (const key of schemaKeys) {
+  for (const key of keys) {
     const descriptor = schema[key];
     const parsed = descriptor.deserialize(query[key as string]);
     const value =
@@ -81,9 +78,9 @@ export function serializeQuery<TSchema extends QuerySchema>(
 ): QueryObject {
   const cleanDefaults = options.cleanDefaults ?? true;
   const result: QueryObject = {};
-  const schemaKeys = Object.keys(schema) as Array<keyof TSchema>;
+  const { keys } = getSchemaMeta(schema);
 
-  for (const key of schemaKeys) {
+  for (const key of keys) {
     const descriptor = schema[key];
     const value = state[key];
 
@@ -139,12 +136,12 @@ export function removeQueryKeys<TSchema extends QuerySchema>(
   options: Pick<QueryMutationOptions, 'preserveUnknown'> = {},
 ): QueryObject {
   const preserveUnknown = options.preserveUnknown ?? true;
-  const schemaKeySet = getSchemaKeySet(schema);
+  const { keySet } = getSchemaMeta(schema);
   const removedKeySet = new Set<string>(keys as readonly string[]);
   const result: QueryObject = {};
 
   for (const key of Object.keys(currentQuery)) {
-    const isSchemaKey = schemaKeySet.has(key);
+    const isSchemaKey = keySet.has(key);
 
     if (!isSchemaKey && !preserveUnknown) {
       continue;
