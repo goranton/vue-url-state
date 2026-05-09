@@ -1,5 +1,5 @@
 {
-  "name": "vue-url-state",
+  "name": "@goranton/vue-url-state",
   "version": "0.1.0",
   "description": "Type-safe URL query state management for Vue and Nuxt",
   "keywords": [
