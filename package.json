@@ -22,7 +22,8 @@
     "typecheck:core": "tsc --project tsconfig.json --noEmit",
     "test": "vitest run",
     "build": "tsup",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "playground": "npm --prefix playground run dev"
   },
   "peerDependencies": {
     "vue": "^3.0.0",
