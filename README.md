@@ -2,6 +2,9 @@
 
 Type-safe URL query state management for Vue and Nuxt.
 
+[![npm version](https://img.shields.io/npm/v/@goranton/vue-url-state.svg)](https://www.npmjs.com/package/@goranton/vue-url-state)
+[![license](https://img.shields.io/npm/l/@goranton/vue-url-state.svg)](https://github.com/goranton/vue-url-state/blob/main/LICENSE)
+
 `vue-url-state` helps manage filters, pagination, tabs, and other page state through typed URL query params.
 
 ## Why
