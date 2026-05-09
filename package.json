@@ -1,0 +1,17 @@
+{
+  "name": "vue-url-state",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "typecheck:core": "tsc --strict --noEmit --target ES2020 --module ESNext --moduleResolution Bundler --lib ES2020 src/index.ts src/schema.ts src/params.ts src/types.ts src/type-tests.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
