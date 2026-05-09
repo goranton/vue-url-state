@@ -27,8 +27,5 @@ jobs:
       - name: Test
         run: npm run test
 
-      - name: Build
-        run: npm run build
-
-      - name: Package Smoke Test
-        run: npm run smoke:package
+      - name: Check package build and smoke
+        run: npm run check:package
