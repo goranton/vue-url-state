@@ -16,6 +16,7 @@ export default defineConfig({
         items: [
           { text: 'Getting Started', link: '/guide/getting-started' },
           { text: 'Nuxt usage', link: '/guide/nuxt' },
+          { text: 'Examples', link: '/guide/examples' },
           { text: 'Schema and Params', link: '/guide/schema' },
           { text: 'useQueryState', link: '/guide/use-query-state' },
           { text: 'useQueryField', link: '/guide/use-query-field' },
