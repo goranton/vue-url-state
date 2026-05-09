@@ -37,6 +37,8 @@
     "build": "tsup",
     "smoke:package": "node scripts/smoke-package.mjs",
     "check:package": "npm run build && npm run smoke:package",
+    "pack:dry-run": "npm pack --dry-run",
+    "check": "npm run typecheck && npm run test && npm run check:package && npm run pack:dry-run",
     "prepack": "npm run build",
     "playground": "npm --prefix playground run dev"
   },
