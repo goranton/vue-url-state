@@ -47,7 +47,10 @@
     "pack:dry-run": "npm pack --dry-run",
     "check": "npm run typecheck && npm run test && npm run check:package && npm run pack:dry-run",
     "prepack": "npm run build",
-    "playground": "npm --prefix playground run dev"
+    "playground": "npm --prefix playground run dev",
+    "docs:dev": "vitepress dev docs-site",
+    "docs:build": "vitepress build docs-site",
+    "docs:preview": "vitepress preview docs-site"
   },
   "peerDependencies": {
     "vue": "^3.0.0",
@@ -56,6 +59,7 @@
   "devDependencies": {
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
+    "vitepress": "^1.6.4",
     "vitest": "^3.2.4",
     "vue": "^3.5.34",
     "vue-router": "^4.6.4"
