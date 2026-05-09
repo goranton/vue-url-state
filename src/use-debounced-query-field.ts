@@ -1,5 +1,6 @@
 import { getCurrentScope, onScopeDispose, ref, watch, type Ref } from 'vue';
 
+import { cloneStateValue, isSameValue } from './internal/value';
 import type { QueryStateInput } from './query';
 import type { InferQuerySchema, QuerySchema } from './types';
 import type { QueryPatchOptions, UseQueryStateReturn } from './use-query-state';
@@ -9,32 +10,6 @@ export type UseDebouncedQueryFieldOptions<TSchema extends QuerySchema> = QueryPa
   resetOnChange?: QueryStateInput<TSchema>;
   onError?: (error: unknown) => void;
 };
-
-function cloneValue<T>(value: T): T {
-  if (Array.isArray(value)) {
-    return [...value] as T;
-  }
-
-  return value;
-}
-
-function isSameValue(left: unknown, right: unknown): boolean {
-  if (Array.isArray(left) && Array.isArray(right)) {
-    if (left.length !== right.length) {
-      return false;
-    }
-
-    for (let i = 0; i < left.length; i += 1) {
-      if (!Object.is(left[i], right[i])) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  return Object.is(left, right);
-}
 
 export function useDebouncedQueryField<
   TSchema extends QuerySchema,
@@ -53,7 +28,7 @@ export function useDebouncedQueryField<
       }
     : undefined;
 
-  const fieldRef = ref(cloneValue(query.state.value[key])) as Ref<InferQuerySchema<TSchema>[TKey]>;
+  const fieldRef = ref(cloneStateValue(query.state.value[key])) as Ref<InferQuerySchema<TSchema>[TKey]>;
   let timer: ReturnType<typeof setTimeout> | undefined;
 
   const clearPendingTimer = (): void => {
@@ -91,7 +66,7 @@ export function useDebouncedQueryField<
     () => query.state.value[key],
     (nextValue) => {
       if (!isSameValue(fieldRef.value, nextValue)) {
-        fieldRef.value = cloneValue(nextValue);
+        fieldRef.value = cloneStateValue(nextValue);
       }
     },
     { flush: 'sync' },
