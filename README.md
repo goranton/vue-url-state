@@ -17,12 +17,12 @@ Working with query params directly usually creates the same issues across pages:
 ## Install
 
 ```bash
-npm install vue-url-state
-pnpm add vue-url-state
-yarn add vue-url-state
+npm install @goranton/vue-url-state
+pnpm add @goranton/vue-url-state
+yarn add @goranton/vue-url-state
 ```
 
-The package is not published yet while `package.json` has `private: true`. Install commands are preview usage for when it is published.
+Install from npm using the scoped package name.
 
 ## Basic Schema
 
@@ -34,7 +34,7 @@ import {
   enumParam,
   numberParam,
   stringParam,
-} from 'vue-url-state';
+} from '@goranton/vue-url-state';
 
 const usersQuerySchema = defineQuerySchema({
   search: stringParam(),
@@ -60,7 +60,7 @@ Inferred state type:
 ## useQueryState
 
 ```ts
-import { useQueryState } from 'vue-url-state';
+import { useQueryState } from '@goranton/vue-url-state';
 
 const query = useQueryState(usersQuerySchema);
 
@@ -79,7 +79,7 @@ await query.reset();
 ## useQueryField
 
 ```ts
-import { useQueryField, useQueryState } from 'vue-url-state';
+import { useQueryField, useQueryState } from '@goranton/vue-url-state';
 
 const query = useQueryState(usersQuerySchema);
 
@@ -103,7 +103,7 @@ search.value = 'anton';
 ## useDebouncedQueryField
 
 ```ts
-import { useDebouncedQueryField, useQueryState } from 'vue-url-state';
+import { useDebouncedQueryField, useQueryState } from '@goranton/vue-url-state';
 
 const query = useQueryState(usersQuerySchema);
 
@@ -131,7 +131,7 @@ search.value = 'anton';
 ## useQueryBuffer
 
 ```ts
-import { useQueryBuffer, useQueryState } from 'vue-url-state';
+import { useQueryBuffer, useQueryState } from '@goranton/vue-url-state';
 
 const query = useQueryState(usersQuerySchema);
 const buffer = useQueryBuffer(query);
@@ -152,7 +152,7 @@ if (buffer.isDirty.value) {
 ## Pure Helpers
 
 ```ts
-import { deserializeQuery, serializeQuery } from 'vue-url-state';
+import { deserializeQuery, serializeQuery } from '@goranton/vue-url-state';
 
 const state = deserializeQuery(usersQuerySchema, {
   page: '2',
