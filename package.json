@@ -1,6 +1,6 @@
 {
   "name": "vue-url-state",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Type-safe URL query state management for Vue and Nuxt",
   "keywords": [
     "vue",
@@ -22,7 +22,6 @@
     "url": "https://github.com/goranton/vue-url-state/issues"
   },
   "homepage": "https://github.com/goranton/vue-url-state#readme",
-  "private": true,
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
