@@ -25,6 +25,15 @@ export {
 } from './query';
 
 export type {
+  QueryNavigationMode,
+  QueryPatchOptions,
+  UseQueryStateOptions,
+  UseQueryStateReturn,
+} from './use-query-state';
+
+export { useQueryState } from './use-query-state';
+
+export type {
   ArrayParamOptions,
   BooleanParamOptions,
   EnumParamOptions,

@@ -10,9 +10,11 @@ import {
   resetQuery,
   serializeQuery,
   stringParam,
+  useQueryState,
   type InferQuerySchema,
   type QueryObject,
 } from './index';
+import type { ComputedRef } from 'vue';
 
 type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2)
   ? true
@@ -248,6 +250,48 @@ const resetResult = resetQuery(
 );
 
 type _TestResetQueryReturnsQueryObject = Expect<Equal<typeof resetResult, QueryObject>>;
+
+const useQueryStateSchema = defineQuerySchema({
+  search: stringParam(),
+  page: numberParam({ defaultValue: 1 }),
+  status: enumParam(['active', 'blocked'] as const),
+});
+
+const useQueryStateResult = useQueryState(useQueryStateSchema, {
+  route: {
+    query: {},
+  } as never,
+  router: {
+    replace: async () => undefined,
+    push: async () => undefined,
+  } as never,
+});
+
+type _TestUseQueryStateStateRef = Expect<
+  Equal<
+    typeof useQueryStateResult.state,
+    ComputedRef<InferQuerySchema<typeof useQueryStateSchema>>
+  >
+>;
+
+useQueryStateResult.patch({
+  search: 'anton',
+});
+
+useQueryStateResult.patch({
+  page: undefined,
+});
+
+useQueryStateResult.patch({
+  // @ts-expect-error invalid enum value in patch
+  status: 'pending',
+});
+
+useQueryStateResult.remove(['search']);
+useQueryStateResult.remove([
+  // @ts-expect-error key is not part of schema
+  'unknown',
+]);
 
 enumParam(['active', 'blocked'] as const, {
   // @ts-expect-error invalid enum default
