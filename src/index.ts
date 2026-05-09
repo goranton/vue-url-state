@@ -36,6 +36,9 @@ export { useQueryState } from './use-query-state';
 export type { UseQueryFieldOptions } from './use-query-field';
 export { useQueryField } from './use-query-field';
 
+export type { UseDebouncedQueryFieldOptions } from './use-debounced-query-field';
+export { useDebouncedQueryField } from './use-debounced-query-field';
+
 export type {
   UseQueryBufferOptions,
   UseQueryBufferReturn,

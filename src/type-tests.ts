@@ -1,6 +1,7 @@
 import {
   arrayParam,
   booleanParam,
+  useDebouncedQueryField,
   deserializeQuery,
   defineQuerySchema,
   enumParam,
@@ -358,6 +359,44 @@ useQueryField(useQueryStateResult, 'unknown');
 const statusField = useQueryField(useQueryStateResult, 'status');
 // @ts-expect-error invalid enum value assignment
 statusField.value = 'pending';
+
+const debouncedSearchField = useDebouncedQueryField(useQueryStateResult, 'search');
+const debouncedPageField = useDebouncedQueryField(useQueryStateResult, 'page');
+
+type _TestUseDebouncedQueryFieldSearchRef = Expect<
+  Equal<typeof debouncedSearchField, Ref<string | undefined>>
+>;
+type _TestUseDebouncedQueryFieldPageRef = Expect<
+  Equal<typeof debouncedPageField, Ref<number>>
+>;
+
+useDebouncedQueryField(
+  useQueryStateResult,
+  'search',
+  {
+    resetOnChange: {
+      page: 1,
+    },
+  },
+);
+
+useDebouncedQueryField(
+  useQueryStateResult,
+  'search',
+  {
+    resetOnChange: {
+      // @ts-expect-error invalid resetOnChange value type
+      page: '1',
+    },
+  },
+);
+
+// @ts-expect-error invalid debounced field key
+useDebouncedQueryField(useQueryStateResult, 'unknown');
+
+const debouncedStatusField = useDebouncedQueryField(useQueryStateResult, 'status');
+// @ts-expect-error invalid enum value assignment
+debouncedStatusField.value = 'pending';
 
 enumParam(['active', 'blocked'] as const, {
   // @ts-expect-error invalid enum default
