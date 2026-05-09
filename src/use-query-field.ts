@@ -6,6 +6,7 @@ import type { QueryPatchOptions, UseQueryStateReturn } from './use-query-state';
 
 export type UseQueryFieldOptions<TSchema extends QuerySchema> = QueryPatchOptions & {
   resetOnChange?: QueryStateInput<TSchema>;
+  onError?: (error: unknown) => void;
 };
 
 export function useQueryField<
@@ -32,7 +33,9 @@ export function useQueryField<
         [key]: value,
       } as QueryStateInput<TSchema>;
 
-      void query.patch(nextPatch, patchOptions);
+      void query.patch(nextPatch, patchOptions).catch((error) => {
+        options?.onError?.(error);
+      });
     },
   });
 }

@@ -96,6 +96,7 @@ search.value = 'anton';
 - It is useful for `v-model` bindings in forms.
 - Setting the field updates URL state via `query.patch()`.
 - `resetOnChange` can reset related fields (for example `page: 1` when search changes).
+- `onError` can be used to observe fire-and-forget helper failures.
 - `useQueryField` is fire-and-forget because writable computed setters cannot be awaited directly.
 - For awaited navigation, explicit error handling, or fully controlled async flows, use `query.patch()` directly.
 
@@ -121,6 +122,7 @@ search.value = 'anton';
 - The local value updates immediately.
 - URL updates happen only after the debounce delay.
 - `resetOnChange` can reset related fields (for example `page: 1`).
+- `onError` can be used to observe debounced fire-and-forget helper failures.
 - Debounce is intentionally not part of `useQueryState()`.
 - For immediate updates, use `useQueryField()`.
 - For explicit Apply-button flows, use `useQueryBuffer()`.
