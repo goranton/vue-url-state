@@ -1,6 +1,19 @@
 {
   "name": "vue-url-state",
   "version": "0.0.0",
+  "description": "Type-safe URL query state management for Vue and Nuxt",
+  "keywords": [
+    "vue",
+    "nuxt",
+    "vue-router",
+    "query",
+    "url-state",
+    "query-state",
+    "typescript",
+    "filters"
+  ],
+  "license": "MIT",
+  "author": "Anton Gor",
   "private": true,
   "type": "module",
   "main": "./dist/index.cjs",
