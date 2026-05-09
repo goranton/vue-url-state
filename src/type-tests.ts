@@ -310,6 +310,10 @@ useQueryBufferResult.patch({
 });
 
 useQueryBufferResult.patch({
+  page: undefined,
+});
+
+useQueryBufferResult.patch({
   // @ts-expect-error invalid enum value in buffer patch
   status: 'pending',
 });

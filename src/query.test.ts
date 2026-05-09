@@ -326,6 +326,32 @@ describe('query mutation helpers', () => {
     });
   });
 
+  it('patchQuery normalizes full schema-owned state, not only touched keys', () => {
+    const schema = defineQuerySchema({
+      search: stringParam(),
+      page: numberParam({ defaultValue: 1, integer: true, min: 1 }),
+      status: enumParam(['active', 'blocked'] as const),
+    });
+
+    const result = patchQuery(
+      schema,
+      {
+        search: 'old',
+        page: 'abc',
+        status: 'deleted',
+        utm_source: 'x',
+      },
+      {
+        search: 'new',
+      },
+    );
+
+    expect(result).toEqual({
+      search: 'new',
+      utm_source: 'x',
+    });
+  });
+
   it('removeQueryKeys removes selected schema keys and preserves unknown keys', () => {
     const schema = defineQuerySchema({
       search: stringParam(),

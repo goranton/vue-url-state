@@ -174,6 +174,12 @@ const raw = serializeQuery(usersQuerySchema, {
 - `cleanDefaults` removes default values from URL by default.
 - `preserveUnknown` keeps unknown query params by default.
 
+## Behavior Notes
+
+- `patchQuery()` and `query.patch()` normalize full schema-owned query state, not only touched keys.
+- This keeps URLs canonical: invalid schema values are removed or defaulted, and default values are cleaned by default.
+- Unknown query params are preserved by default.
+
 ## Status
 
 - Early-stage project.
