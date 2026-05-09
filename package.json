@@ -21,7 +21,7 @@
   "bugs": {
     "url": "https://github.com/goranton/vue-url-state/issues"
   },
-  "homepage": "https://github.com/goranton/vue-url-state#readme",
+  "homepage": "https://goranton.github.io/vue-url-state/",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
