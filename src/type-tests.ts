@@ -5,9 +5,13 @@ import {
   defineQuerySchema,
   enumParam,
   numberParam,
+  patchQuery,
+  removeQueryKeys,
+  resetQuery,
   serializeQuery,
   stringParam,
   type InferQuerySchema,
+  type QueryObject,
 } from './index';
 
 type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2)
@@ -164,6 +168,86 @@ serializeQuery(
     page: '1',
   },
 );
+
+patchQuery(
+  defineQuerySchema({
+    search: stringParam(),
+    page: numberParam({ defaultValue: 1 }),
+  }),
+  {
+    search: 'old',
+    page: '2',
+  },
+  {
+    search: 'anton',
+  },
+);
+
+patchQuery(
+  defineQuerySchema({
+    page: numberParam({ defaultValue: 1 }),
+  }),
+  {
+    page: '2',
+  },
+  {
+    page: undefined,
+  },
+);
+
+patchQuery(
+  defineQuerySchema({
+    status: enumParam(['active', 'blocked'] as const),
+  }),
+  {
+    status: 'active',
+  },
+  {
+    // @ts-expect-error invalid enum value in patch
+    status: 'pending',
+  },
+);
+
+removeQueryKeys(
+  defineQuerySchema({
+    search: stringParam(),
+    page: numberParam({ defaultValue: 1 }),
+  }),
+  {
+    search: 'anton',
+    page: '2',
+  },
+  ['search'],
+);
+
+removeQueryKeys(
+  defineQuerySchema({
+    search: stringParam(),
+    page: numberParam({ defaultValue: 1 }),
+  }),
+  {
+    search: 'anton',
+    page: '2',
+  },
+  [
+    // @ts-expect-error key is not part of schema
+    'status',
+  ],
+);
+
+const resetResult = resetQuery(
+  defineQuerySchema({
+    search: stringParam(),
+    page: numberParam({ defaultValue: 1 }),
+  }),
+  {
+    search: 'anton',
+    page: '2',
+    utm_source: 'x',
+  },
+);
+
+type _TestResetQueryReturnsQueryObject = Expect<Equal<typeof resetResult, QueryObject>>;
 
 enumParam(['active', 'blocked'] as const, {
   // @ts-expect-error invalid enum default
