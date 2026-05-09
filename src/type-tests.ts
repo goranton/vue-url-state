@@ -11,11 +11,12 @@ import {
   serializeQuery,
   stringParam,
   useQueryBuffer,
+  useQueryField,
   useQueryState,
   type InferQuerySchema,
   type QueryObject,
 } from './index';
-import type { ComputedRef, Ref } from 'vue';
+import type { ComputedRef, Ref, WritableComputedRef } from 'vue';
 
 type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2)
   ? true
@@ -321,6 +322,42 @@ useQueryBufferResult.apply({
   history: 'push',
   preserveUnknown: false,
 });
+
+const searchField = useQueryField(useQueryStateResult, 'search');
+const pageField = useQueryField(useQueryStateResult, 'page');
+
+type _TestUseQueryFieldSearchRef = Expect<
+  Equal<typeof searchField, WritableComputedRef<string | undefined>>
+>;
+type _TestUseQueryFieldPageRef = Expect<Equal<typeof pageField, WritableComputedRef<number>>>;
+
+useQueryField(
+  useQueryStateResult,
+  'search',
+  {
+    resetOnChange: {
+      page: 1,
+    },
+  },
+);
+
+useQueryField(
+  useQueryStateResult,
+  'search',
+  {
+    resetOnChange: {
+      // @ts-expect-error invalid resetOnChange value type
+      page: '1',
+    },
+  },
+);
+
+// @ts-expect-error invalid query field key
+useQueryField(useQueryStateResult, 'unknown');
+
+const statusField = useQueryField(useQueryStateResult, 'status');
+// @ts-expect-error invalid enum value assignment
+statusField.value = 'pending';
 
 enumParam(['active', 'blocked'] as const, {
   // @ts-expect-error invalid enum default
