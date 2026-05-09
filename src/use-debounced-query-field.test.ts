@@ -46,6 +46,14 @@ function createMockQuery(initialState: SchemaState): {
   };
 }
 
+function createRejectedPatchSpy() {
+  return vi.fn((_patch: QueryStateInput<typeof schema>, _options?: QueryPatchOptions) => {
+    const rejection = Promise.reject(new Error('Navigation failed'));
+    void rejection.catch(() => {});
+    return rejection;
+  });
+}
+
 describe('useDebouncedQueryField', () => {
   beforeEach(() => {
     vi.useFakeTimers();
@@ -232,5 +240,31 @@ describe('useDebouncedQueryField', () => {
     vi.advanceTimersByTime(300);
 
     expect(patchSpy).not.toHaveBeenCalled();
+  });
+
+  it('debounced setter still calls query.patch when patch promise rejects', async () => {
+    const stateRef = ref<SchemaState>({
+      search: undefined,
+      page: 1,
+      status: undefined,
+    });
+    const patchSpy = createRejectedPatchSpy();
+    const query: UseQueryStateReturn<typeof schema> = {
+      state: computed(() => stateRef.value),
+      raw: computed(() => ({} as QueryObject)),
+      patch: patchSpy,
+      remove: async () => undefined,
+      reset: async () => undefined,
+      serialize: () => ({}),
+      deserialize: () => stateRef.value,
+    };
+
+    const searchField = useDebouncedQueryField(query, 'search', { debounce: 100 });
+    searchField.value = 'anton';
+    vi.advanceTimersByTime(100);
+
+    expect(patchSpy).toHaveBeenCalledTimes(1);
+    const patchPromise = patchSpy.mock.results[0]?.value as Promise<unknown>;
+    await expect(patchPromise).rejects.toThrow('Navigation failed');
   });
 });
