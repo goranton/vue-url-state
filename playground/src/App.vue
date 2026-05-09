@@ -9,6 +9,7 @@ import {
   numberParam,
   stringParam,
   useQueryBuffer,
+  useQueryField,
   useQueryState,
 } from '@lib';
 
@@ -22,6 +23,15 @@ const usersQuerySchema = defineQuerySchema({
 
 const query = useQueryState(usersQuerySchema);
 const buffer = useQueryBuffer(query);
+const searchField = useQueryField(query, 'search', {
+  resetOnChange: { page: 1 },
+});
+const statusField = useQueryField(query, 'status', {
+  resetOnChange: { page: 1 },
+});
+const onlyWithErrorsField = useQueryField(query, 'onlyWithErrors', {
+  resetOnChange: { page: 1 },
+});
 
 const directSearchInput = ref('');
 watch(
@@ -43,6 +53,27 @@ const directOnlyWithErrorsModel = computed({
   get: () => query.state.value.onlyWithErrors ?? false,
   set: (checked: boolean) => {
     void query.patch({ onlyWithErrors: checked ? true : undefined });
+  },
+});
+
+const fieldSearchModel = computed({
+  get: () => searchField.value ?? '',
+  set: (value: string) => {
+    searchField.value = value === '' ? undefined : value;
+  },
+});
+
+const fieldStatusModel = computed({
+  get: () => statusField.value ?? '',
+  set: (value: '' | 'active' | 'blocked' | 'pending') => {
+    statusField.value = value === '' ? undefined : value;
+  },
+});
+
+const fieldOnlyWithErrorsModel = computed({
+  get: () => onlyWithErrorsField.value ?? false,
+  set: (checked: boolean) => {
+    onlyWithErrorsField.value = checked ? true : undefined;
   },
 });
 
@@ -174,6 +205,34 @@ async function applyBuffer(): Promise<void> {
         <button type="button" @click="applyBuffer">apply</button>
         <button type="button" @click="buffer.reset">reset draft</button>
         <button type="button" @click="buffer.clear">clear draft</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Field mode (useQueryField)</h2>
+      <p class="hint">Editing these fields updates URL immediately.</p>
+      <pre>{{ stateJson }}</pre>
+
+      <div class="controls">
+        <label>
+          Search
+          <input v-model="fieldSearchModel" type="text" placeholder="Search users..." />
+        </label>
+
+        <label>
+          Status
+          <select v-model="fieldStatusModel">
+            <option value="">(none)</option>
+            <option value="active">active</option>
+            <option value="blocked">blocked</option>
+            <option value="pending">pending</option>
+          </select>
+        </label>
+
+        <label class="checkbox">
+          <input v-model="fieldOnlyWithErrorsModel" type="checkbox" />
+          onlyWithErrors
+        </label>
       </div>
     </section>
   </main>

@@ -76,6 +76,28 @@ await query.reset();
 - unknown query params are preserved by default
 - default values are cleaned from URL by default
 
+## useQueryField
+
+```ts
+import { useQueryField, useQueryState } from 'vue-url-state';
+
+const query = useQueryState(usersQuerySchema);
+
+const search = useQueryField(query, 'search', {
+  resetOnChange: {
+    page: 1,
+  },
+});
+
+search.value = 'anton';
+```
+
+- `useQueryField` returns a writable computed ref for a single field.
+- It is useful for `v-model` bindings in forms.
+- Setting the field updates URL state via `query.patch()`.
+- `resetOnChange` can reset related fields (for example `page: 1` when search changes).
+- For awaited and fully controlled updates, use `query.patch()` directly.
+
 ## useQueryBuffer
 
 ```ts
@@ -117,7 +139,7 @@ const raw = serializeQuery(usersQuerySchema, {
 - **Schema:** `defineQuerySchema`
 - **Params:** `stringParam`, `numberParam`, `booleanParam`, `enumParam`, `arrayParam`
 - **Pure helpers:** `deserializeQuery`, `serializeQuery`, `patchQuery`, `removeQueryKeys`, `resetQuery`
-- **Vue composables:** `useQueryState`, `useQueryBuffer`
+- **Vue composables:** `useQueryState`, `useQueryField`, `useQueryBuffer`
 
 ## Defaults
 
