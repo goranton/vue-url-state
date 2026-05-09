@@ -96,7 +96,8 @@ search.value = 'anton';
 - It is useful for `v-model` bindings in forms.
 - Setting the field updates URL state via `query.patch()`.
 - `resetOnChange` can reset related fields (for example `page: 1` when search changes).
-- For awaited and fully controlled updates, use `query.patch()` directly.
+- `useQueryField` is fire-and-forget because writable computed setters cannot be awaited directly.
+- For awaited navigation, explicit error handling, or fully controlled async flows, use `query.patch()` directly.
 
 ## useDebouncedQueryField
 
@@ -123,6 +124,7 @@ search.value = 'anton';
 - Debounce is intentionally not part of `useQueryState()`.
 - For immediate updates, use `useQueryField()`.
 - For explicit Apply-button flows, use `useQueryBuffer()`.
+- `useDebouncedQueryField` is also fire-and-forget because refs are not awaitable setters.
 
 ## useQueryBuffer
 
@@ -143,6 +145,7 @@ if (buffer.isDirty.value) {
 - `apply()` writes the draft to URL through `query.patch()`
 - `reset()` discards local draft edits
 - `clear()` resets draft to default/empty state
+- `apply()` is awaitable and is the recommended controlled async flow.
 
 ## Pure Helpers
 
