@@ -9,6 +9,15 @@ export type {
 export { defineQuerySchema } from './schema';
 
 export type {
+  QueryObject,
+  QueryStateInput,
+  QueryValue,
+  SerializeQueryOptions,
+} from './query';
+
+export { deserializeQuery, serializeQuery } from './query';
+
+export type {
   ArrayParamOptions,
   BooleanParamOptions,
   EnumParamOptions,

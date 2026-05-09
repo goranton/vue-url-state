@@ -1,9 +1,11 @@
 import {
   arrayParam,
   booleanParam,
+  deserializeQuery,
   defineQuerySchema,
   enumParam,
   numberParam,
+  serializeQuery,
   stringParam,
   type InferQuerySchema,
 } from './index';
@@ -100,6 +102,68 @@ type _TestArrayInference = Expect<
     }
   >
 >;
+
+const deserializedState = deserializeQuery(
+  defineQuerySchema({
+    search: stringParam(),
+    page: numberParam({ defaultValue: 1 }),
+  }),
+  {
+    search: 'anton',
+    page: '2',
+    unknown: 'ignored',
+  },
+);
+
+type DeserializedState = typeof deserializedState;
+type _TestDeserializeReturnType = Expect<
+  Equal<
+    DeserializedState,
+    {
+      search: string | undefined;
+      page: number;
+    }
+  >
+>;
+
+serializeQuery(
+  defineQuerySchema({
+    search: stringParam(),
+    page: numberParam({ defaultValue: 1 }),
+  }),
+  {
+    search: 'anton',
+  },
+);
+
+serializeQuery(
+  defineQuerySchema({
+    page: numberParam({ defaultValue: 1 }),
+  }),
+  {
+    page: undefined,
+  },
+);
+
+const enumOnlySchema = defineQuerySchema({
+  status: enumParam(['active', 'blocked'] as const),
+});
+
+serializeQuery(enumOnlySchema, {
+  // @ts-expect-error invalid enum value for schema
+  status: 'pending',
+});
+
+serializeQuery(
+  defineQuerySchema({
+    search: stringParam(),
+    page: numberParam({ defaultValue: 1 }),
+  }),
+  {
+    // @ts-expect-error page must be number
+    page: '1',
+  },
+);
 
 enumParam(['active', 'blocked'] as const, {
   // @ts-expect-error invalid enum default
