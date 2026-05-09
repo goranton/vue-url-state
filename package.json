@@ -3,20 +3,33 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
   "files": [
     "dist"
   ],
   "sideEffects": false,
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "typecheck:core": "tsc --strict --noEmit --target ES2020 --module ESNext --moduleResolution Bundler --lib ES2020,DOM src/index.ts src/schema.ts src/params.ts src/types.ts src/type-tests.ts",
-    "test": "vitest run"
+    "typecheck:core": "tsc --project tsconfig.json --noEmit",
+    "test": "vitest run",
+    "build": "tsup",
+    "prepack": "npm run build"
   },
   "peerDependencies": {
     "vue": "^3.0.0",
     "vue-router": "^4.0.0"
   },
   "devDependencies": {
+    "tsup": "^8.5.1",
     "typescript": "^5.9.3",
     "vitest": "^3.2.4",
     "vue": "^3.5.34",
