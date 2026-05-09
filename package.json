@@ -14,6 +14,14 @@
   ],
   "license": "MIT",
   "author": "Anton Gor",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/goranton/vue-url-state.git"
+  },
+  "bugs": {
+    "url": "https://github.com/goranton/vue-url-state/issues"
+  },
+  "homepage": "https://github.com/goranton/vue-url-state#readme",
   "private": true,
   "type": "module",
   "main": "./dist/index.cjs",
