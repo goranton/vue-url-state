@@ -98,6 +98,32 @@ search.value = 'anton';
 - `resetOnChange` can reset related fields (for example `page: 1` when search changes).
 - For awaited and fully controlled updates, use `query.patch()` directly.
 
+## useDebouncedQueryField
+
+```ts
+import { useDebouncedQueryField, useQueryState } from 'vue-url-state';
+
+const query = useQueryState(usersQuerySchema);
+
+const search = useDebouncedQueryField(query, 'search', {
+  debounce: 300,
+  resetOnChange: {
+    page: 1,
+  },
+});
+
+search.value = 'anton';
+```
+
+- `useDebouncedQueryField` returns a local `Ref`.
+- It is useful for search inputs and similar frequently changing fields.
+- The local value updates immediately.
+- URL updates happen only after the debounce delay.
+- `resetOnChange` can reset related fields (for example `page: 1`).
+- Debounce is intentionally not part of `useQueryState()`.
+- For immediate updates, use `useQueryField()`.
+- For explicit Apply-button flows, use `useQueryBuffer()`.
+
 ## useQueryBuffer
 
 ```ts
@@ -139,7 +165,7 @@ const raw = serializeQuery(usersQuerySchema, {
 - **Schema:** `defineQuerySchema`
 - **Params:** `stringParam`, `numberParam`, `booleanParam`, `enumParam`, `arrayParam`
 - **Pure helpers:** `deserializeQuery`, `serializeQuery`, `patchQuery`, `removeQueryKeys`, `resetQuery`
-- **Vue composables:** `useQueryState`, `useQueryField`, `useQueryBuffer`
+- **Vue composables:** `useQueryState`, `useQueryField`, `useDebouncedQueryField`, `useQueryBuffer`
 
 ## Defaults
 
