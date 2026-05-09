@@ -9,13 +9,20 @@ export type {
 export { defineQuerySchema } from './schema';
 
 export type {
+  QueryMutationOptions,
   QueryObject,
   QueryStateInput,
   QueryValue,
   SerializeQueryOptions,
 } from './query';
 
-export { deserializeQuery, serializeQuery } from './query';
+export {
+  deserializeQuery,
+  patchQuery,
+  removeQueryKeys,
+  resetQuery,
+  serializeQuery,
+} from './query';
 
 export type {
   ArrayParamOptions,
