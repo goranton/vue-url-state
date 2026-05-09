@@ -98,6 +98,87 @@ describe('deserializeQuery', () => {
       status: undefined,
     });
   });
+
+  it('uses first value when scalar params receive array query values', () => {
+    const schema = defineQuerySchema({
+      search: stringParam(),
+      page: numberParam({ defaultValue: 1 }),
+      enabled: booleanParam(),
+      status: enumParam(['active', 'blocked'] as const),
+    });
+
+    const result = deserializeQuery(schema, {
+      search: ['anton', 'ignored'],
+      page: ['2', '3'],
+      enabled: ['true', 'false'],
+      status: ['active', 'blocked'],
+    });
+
+    expect(result).toEqual({
+      search: 'anton',
+      page: 2,
+      enabled: true,
+      status: 'active',
+    });
+  });
+
+  it('booleanParam supports custom true and false values', () => {
+    const schema = defineQuerySchema({
+      enabled: booleanParam({
+        trueValue: '1',
+        falseValue: '0',
+      }),
+    });
+
+    expect(
+      deserializeQuery(schema, {
+        enabled: '1',
+      }),
+    ).toEqual({
+      enabled: true,
+    });
+
+    expect(
+      deserializeQuery(schema, {
+        enabled: '0',
+      }),
+    ).toEqual({
+      enabled: false,
+    });
+
+    expect(
+      serializeQuery(schema, {
+        enabled: true,
+      }),
+    ).toEqual({
+      enabled: '1',
+    });
+
+    expect(
+      serializeQuery(schema, {
+        enabled: false,
+      }),
+    ).toEqual({
+      enabled: '0',
+    });
+  });
+
+  it('booleanParam returns undefined for invalid value', () => {
+    const schema = defineQuerySchema({
+      enabled: booleanParam({
+        trueValue: '1',
+        falseValue: '0',
+      }),
+    });
+
+    const result = deserializeQuery(schema, {
+      enabled: 'yes',
+    });
+
+    expect(result).toEqual({
+      enabled: undefined,
+    });
+  });
 });
 
 describe('serializeQuery', () => {
@@ -175,6 +256,38 @@ describe('serializeQuery', () => {
     });
 
     expect(result).toEqual({});
+  });
+
+  it('cleans empty array when defaultValue is empty array', () => {
+    const schema = defineQuerySchema({
+      tags: arrayParam(stringParam(), { defaultValue: [] }),
+    });
+
+    const result = serializeQuery(schema, {
+      tags: [],
+    });
+
+    expect(result).toEqual({});
+  });
+
+  it('cleans and preserves non-empty array defaultValue correctly', () => {
+    const schema = defineQuerySchema({
+      tags: arrayParam(stringParam(), { defaultValue: ['vue'] }),
+    });
+
+    expect(
+      serializeQuery(schema, {
+        tags: ['vue'],
+      }),
+    ).toEqual({});
+
+    expect(
+      serializeQuery(schema, {
+        tags: ['nuxt'],
+      }),
+    ).toEqual({
+      tags: ['nuxt'],
+    });
   });
 });
 

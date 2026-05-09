@@ -184,6 +184,9 @@ const raw = serializeQuery(usersQuerySchema, {
 - `patchQuery()` and `query.patch()` normalize full schema-owned query state, not only touched keys.
 - This keeps URLs canonical: invalid schema values are removed or defaulted, and default values are cleaned by default.
 - Unknown query params are preserved by default.
+- For non-array params receiving repeated query keys, the first value is used.
+- `arrayParam()` uses repeated query keys (for example `?tags=vue&tags=nuxt`).
+- Nested array params are not supported/documented.
 
 ## Status
 
