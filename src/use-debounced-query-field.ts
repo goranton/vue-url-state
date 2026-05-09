@@ -7,6 +7,7 @@ import type { QueryPatchOptions, UseQueryStateReturn } from './use-query-state';
 export type UseDebouncedQueryFieldOptions<TSchema extends QuerySchema> = QueryPatchOptions & {
   debounce?: number;
   resetOnChange?: QueryStateInput<TSchema>;
+  onError?: (error: unknown) => void;
 };
 
 function cloneValue<T>(value: T): T {
@@ -77,7 +78,9 @@ export function useDebouncedQueryField<
           [key]: nextValue,
         } as QueryStateInput<TSchema>;
 
-        void query.patch(nextPatch, patchOptions);
+        void query.patch(nextPatch, patchOptions).catch((error) => {
+          options?.onError?.(error);
+        });
         timer = undefined;
       }, debounce);
     },
