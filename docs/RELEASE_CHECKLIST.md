@@ -14,7 +14,7 @@
 
 ## Manual publishing notes
 
-- Remove `private: true`
+- Ensure `private: true` is removed before publishing
 - Set package version
 - Run `npm publish --access public`
 
