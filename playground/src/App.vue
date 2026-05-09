@@ -8,6 +8,7 @@ import {
   enumParam,
   numberParam,
   stringParam,
+  useDebouncedQueryField,
   useQueryBuffer,
   useQueryField,
   useQueryState,
@@ -30,6 +31,10 @@ const statusField = useQueryField(query, 'status', {
   resetOnChange: { page: 1 },
 });
 const onlyWithErrorsField = useQueryField(query, 'onlyWithErrors', {
+  resetOnChange: { page: 1 },
+});
+const debouncedSearchField = useDebouncedQueryField(query, 'search', {
+  debounce: 500,
   resetOnChange: { page: 1 },
 });
 
@@ -74,6 +79,13 @@ const fieldOnlyWithErrorsModel = computed({
   get: () => onlyWithErrorsField.value ?? false,
   set: (checked: boolean) => {
     onlyWithErrorsField.value = checked ? true : undefined;
+  },
+});
+
+const debouncedSearchModel = computed({
+  get: () => debouncedSearchField.value ?? '',
+  set: (value: string) => {
+    debouncedSearchField.value = value === '' ? undefined : value;
   },
 });
 
@@ -232,6 +244,22 @@ async function applyBuffer(): Promise<void> {
         <label class="checkbox">
           <input v-model="fieldOnlyWithErrorsModel" type="checkbox" />
           onlyWithErrors
+        </label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Debounced field mode (useDebouncedQueryField)</h2>
+      <p class="hint">URL updates after 500ms debounce.</p>
+      <p class="hint">
+        Local debounced search value: <code>{{ debouncedSearchModel || '(empty)' }}</code>
+      </p>
+      <pre>{{ stateJson }}</pre>
+
+      <div class="controls">
+        <label>
+          Debounced search
+          <input v-model="debouncedSearchModel" type="text" placeholder="Type to update after 500ms..." />
         </label>
       </div>
     </section>
