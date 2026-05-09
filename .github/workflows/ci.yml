@@ -21,11 +21,5 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Typecheck
-        run: npm run typecheck
-
-      - name: Test
-        run: npm run test
-
-      - name: Check package build and smoke
-        run: npm run check:package
+      - name: Run full check
+        run: npm run check
