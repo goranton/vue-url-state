@@ -10,11 +10,12 @@ import {
   resetQuery,
   serializeQuery,
   stringParam,
+  useQueryBuffer,
   useQueryState,
   type InferQuerySchema,
   type QueryObject,
 } from './index';
-import type { ComputedRef } from 'vue';
+import type { ComputedRef, Ref } from 'vue';
 
 type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2)
   ? true
@@ -292,6 +293,34 @@ useQueryStateResult.remove([
   // @ts-expect-error key is not part of schema
   'unknown',
 ]);
+
+const useQueryBufferResult = useQueryBuffer(useQueryStateResult);
+
+type _TestUseQueryBufferDraftRef = Expect<
+  Equal<
+    typeof useQueryBufferResult.draft,
+    Ref<InferQuerySchema<typeof useQueryStateSchema>>
+  >
+>;
+
+useQueryBufferResult.patch({
+  search: 'draft',
+});
+
+useQueryBufferResult.patch({
+  // @ts-expect-error invalid enum value in buffer patch
+  status: 'pending',
+});
+
+useQueryBufferResult.patch({
+  // @ts-expect-error invalid number type in buffer patch
+  page: '1',
+});
+
+useQueryBufferResult.apply({
+  history: 'push',
+  preserveUnknown: false,
+});
 
 enumParam(['active', 'blocked'] as const, {
   // @ts-expect-error invalid enum default

@@ -34,6 +34,14 @@ export type {
 export { useQueryState } from './use-query-state';
 
 export type {
+  UseQueryBufferOptions,
+  UseQueryBufferReturn,
+  UseQueryBufferSyncMode,
+} from './use-query-buffer';
+
+export { useQueryBuffer } from './use-query-buffer';
+
+export type {
   ArrayParamOptions,
   BooleanParamOptions,
   EnumParamOptions,
