@@ -1,5 +1,6 @@
 import type { InferQuerySchema, QuerySchema, QueryPrimitive } from './types';
 import { getSchemaMeta } from './internal/schema-meta';
+import { isSameValue } from './internal/value';
 
 export type QueryValue = QueryPrimitive;
 export type QueryObject = Record<string, QueryValue>;
@@ -15,24 +16,6 @@ export type QueryMutationOptions = SerializeQueryOptions & {
 export type QueryStateInput<TSchema extends QuerySchema> = Partial<{
   [K in keyof InferQuerySchema<TSchema>]: InferQuerySchema<TSchema>[K] | undefined;
 }>;
-
-function isSameValue(left: unknown, right: unknown): boolean {
-  if (Array.isArray(left) && Array.isArray(right)) {
-    if (left.length !== right.length) {
-      return false;
-    }
-
-    for (let i = 0; i < left.length; i += 1) {
-      if (!Object.is(left[i], right[i])) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  return Object.is(left, right);
-}
 
 function getUnknownQuery<TSchema extends QuerySchema>(
   schema: TSchema,

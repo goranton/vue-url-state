@@ -1,5 +1,6 @@
 import { computed, ref, watch, type ComputedRef, type Ref } from 'vue';
 
+import { cloneStateObject, cloneStateValue, isSameValue } from './internal/value';
 import type { QueryStateInput } from './query';
 import type { QueryPatchOptions, UseQueryStateReturn } from './use-query-state';
 import type { InferQuerySchema, QuerySchema } from './types';
@@ -20,42 +21,6 @@ export type UseQueryBufferReturn<TSchema extends QuerySchema> = {
   clear: () => void;
 };
 
-function cloneValue<T>(value: T): T {
-  if (Array.isArray(value)) {
-    return [...value] as T;
-  }
-
-  return value;
-}
-
-function cloneState<T extends Record<string, unknown>>(state: T): T {
-  const result = {} as T;
-
-  for (const key of Object.keys(state) as Array<keyof T>) {
-    result[key] = cloneValue(state[key]);
-  }
-
-  return result;
-}
-
-function isSameValue(left: unknown, right: unknown): boolean {
-  if (Array.isArray(left) && Array.isArray(right)) {
-    if (left.length !== right.length) {
-      return false;
-    }
-
-    for (let i = 0; i < left.length; i += 1) {
-      if (!Object.is(left[i], right[i])) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  return Object.is(left, right);
-}
-
 function areStatesEqual<TState extends Record<string, unknown>>(left: TState, right: TState): boolean {
   const keys = new Set([...Object.keys(left), ...Object.keys(right)]);
 
@@ -74,7 +39,7 @@ export function useQueryBuffer<TSchema extends QuerySchema>(
 ): UseQueryBufferReturn<TSchema> {
   const syncOnExternalChange = options.syncOnExternalChange ?? 'when-clean';
   const applied = computed(() => query.state.value);
-  const draft = ref(cloneState(applied.value)) as Ref<InferQuerySchema<TSchema>>;
+  const draft = ref(cloneStateObject(applied.value)) as Ref<InferQuerySchema<TSchema>>;
 
   const isDirty = computed(() => !areStatesEqual(draft.value, applied.value));
 
@@ -88,7 +53,7 @@ export function useQueryBuffer<TSchema extends QuerySchema>(
       (syncOnExternalChange === 'when-clean' && areStatesEqual(draft.value, prevApplied));
 
     if (shouldSync) {
-      draft.value = cloneState(nextApplied);
+      draft.value = cloneStateObject(nextApplied);
     }
   });
 
@@ -100,20 +65,20 @@ export function useQueryBuffer<TSchema extends QuerySchema>(
       const nextDraft = { ...draft.value };
 
       for (const key of Object.keys(values) as Array<keyof InferQuerySchema<TSchema>>) {
-        nextDraft[key] = cloneValue(values[key]) as InferQuerySchema<TSchema>[typeof key];
+        nextDraft[key] = cloneStateValue(values[key]) as InferQuerySchema<TSchema>[typeof key];
       }
 
       draft.value = nextDraft;
     },
     async apply(patchOptions) {
       await query.patch(draft.value, patchOptions);
-      draft.value = cloneState(query.state.value);
+      draft.value = cloneStateObject(query.state.value);
     },
     reset() {
-      draft.value = cloneState(applied.value);
+      draft.value = cloneStateObject(applied.value);
     },
     clear() {
-      draft.value = cloneState(query.deserialize({}));
+      draft.value = cloneStateObject(query.deserialize({}));
     },
   };
 }
